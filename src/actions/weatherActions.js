@@ -18,6 +18,6 @@ export function loadWeatherSuccess(payload) {
     return { type: types.LOAD_WEATHER_SUCCESS, payload };
 }
 
-export function changeWeather(weatherType) {
-    return { type: types.CHANGE_WEATHER_SUCCESS, weatherType };
+export function changeWeather(weatherType, currentSelectedIndex) {
+    return { type: types.CHANGE_WEATHER_SUCCESS, weatherType, currentSelectedIndex };
 }

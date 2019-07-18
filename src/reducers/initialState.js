@@ -7,6 +7,7 @@ export default {
         tempModel: [],
         tempType: TemperatureType.FAHRENHEIT,
         fData: [],
-        cData: []
+        cData: [],
+        currentSelectedIndex: 0
     }
 };

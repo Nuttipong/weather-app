@@ -42,7 +42,8 @@ const mapStateToProps = (state) => {
     return {
         city: state.weather.city,
         tempModel: tempModel || [],
-        tempType: state.weather.tempType
+        tempType: state.weather.tempType,
+        currentSelectedIndex: state.weather.currentSelectedIndex
     };
 };
 
@@ -64,50 +65,85 @@ export class WeatherScreen extends React.Component {
                 categories: [],
                 data: [],
                 title: '',
-                yAxis: ''
-            }
+                yAxis: '',
+                date: ''
+            },
+            currentSelectedIndex: 0
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.prevClick = this.prevClick.bind(this);
         this.nextClick = this.nextClick.bind(this);
+        
         this.next = () => (ev) => {
             ev.preventDefault();
             this.nextClick();
         };
+        
         this.prev = () => (ev) => {
             ev.preventDefault();
             this.prevClick();
         };
+
         this.clickMoreDetail = (idx) => (ev) => {            
             const gData = this.props.tempModel.find((td) => td.idx === idx);
-            let data = [], segments = [], labels = [];
-            gData.dateSegment.forEach((d) => {
-                const formatDate = (date) => moment(date).format('hh:mm A');
-                segments.push(d.main.temp_max);
-                labels.push(formatDate(d.dt_txt));
-            });
-            data.push({
-                name: '',
-                data: [...segments]
-            });
-            this.setState({
-                graphModel: {
-                    categories: labels,
-                    data: data
-                }
-            });
+            this.renderGraph(gData, idx);
         };
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.currentSelectedIndex !== state.currentSelectedIndex) {
+            return {
+                currentSelectedIndex: state.currentSelectedIndex,
+            };
+        }
+        return null;
+    }
+
     componentDidMount() {
+        let gData = [];
         if (this.props.tempModel.length === 0) {
-            this.props.actions.loadWeather();
+            this.props.actions.loadWeather()
+            .then(() => {
+                gData = this.props.tempModel[0] || [];
+                this.renderGraph(gData);
+            });
+        } else {
+            gData = this.props.tempModel[0];
+            this.renderGraph(gData);
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.currentSelectedIndex !== prevProps.currentSelectedIndex) {
+            const gData = this.props.tempModel.find((td) => td.idx === this.props.currentSelectedIndex);
+            this.renderGraph(gData, this.props.currentSelectedIndex);
+        }
+      }
+
+    renderGraph(gData, idx = 0) {
+        let data = [], segments = [], labels = [];
+        gData.dateSegment.forEach((d) => {
+            const formatDate = (date) => moment(date).format('hh:mm A');
+            segments.push(d.main.temp_max);
+            labels.push(formatDate(d.dt_txt));
+        });
+        data.push({
+            name: 'Temperature',
+            data: [...segments]
+        });
+        this.setState({
+            graphModel: {
+                categories: labels,
+                data: data,
+                date: gData.date
+            },
+            currentSelectedIndex: idx
+        });
+    }
+
     handleChange(event) {
-        this.props.actions.changeWeather(event.target.value);
+        this.props.actions.changeWeather(event.target.value, this.state.currentSelectedIndex);
     }
 
     prevClick() {
@@ -170,7 +206,7 @@ export class WeatherScreen extends React.Component {
                     />
 
                     <BarChart
-                        title={`Forecast of ${this.props.city.name}<br/>xxxxx`}
+                        title={`Forecast of ${this.props.city.name}<br/>${this.state.graphModel.date}`}
                         yAxis={this.props.tempType}
                         categories={this.state.graphModel.categories}
                         data={this.state.graphModel.data}
@@ -186,7 +222,8 @@ WeatherScreen.propTypes = {
     city: PropTypes.object.isRequired,
     tempModel: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
-    tempType: PropTypes.string.isRequired
+    tempType: PropTypes.string.isRequired,
+    currentSelectedIndex: PropTypes.number.isRequired
 };
   
 export default connect(mapStateToProps, mapDispatchToProps)(WeatherScreen);

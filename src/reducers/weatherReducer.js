@@ -10,7 +10,8 @@ export function reducer(state = initialState.weather, action) {
         case types.CHANGE_WEATHER_SUCCESS: {
             return Object.assign({}, state, {
                 ...state,
-                tempType: action.weatherType
+                tempType: action.weatherType,
+                currentSelectedIndex: action.currentSelectedIndex
             });
         }
 
