@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function WeatherCard(weather) {
   const classes = useStyles();
-  const { city, tempAvgPerDay, unit, date } = weather;
+  const { city, tempAvgPerDay, unit, date, onClickMoreDetail, idx } = weather;
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -37,7 +37,7 @@ export default function WeatherCard(weather) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" className={classes.button}>More detail...</Button>
+        <Button onClick={onClickMoreDetail(idx)} size="small" className={classes.button}>More detail...</Button>
       </CardActions>
     </Card>
   );

@@ -2,7 +2,7 @@ import React from 'react';
 import WeatherCard from './WeatherCard';
 import PropTypes from 'prop-types';
 
-export const WeatherCardList = ({ model, pageSize, startIndex }) => {
+export const WeatherCardList = ({ model, pageSize, startIndex, onClickMoreDetail }) => {
     const list = model;
     const listToShow = [];
     let limit = 0;
@@ -19,6 +19,8 @@ export const WeatherCardList = ({ model, pageSize, startIndex }) => {
             {listToShow.map((weather, index) => {
                 return <WeatherCard key={index}
                             {...weather}
+                            onClickMoreDetail={onClickMoreDetail}
+                            idx={weather.idx}
                         />;
             })}
         </div>
@@ -28,7 +30,8 @@ export const WeatherCardList = ({ model, pageSize, startIndex }) => {
 WeatherCardList.propTpes = {
     model: PropTypes.array.isRequired,
     pageSize: PropTypes.number.isRequired,
-    startIndex: PropTypes.number.isRequired
+    startIndex: PropTypes.number.isRequired,
+    onClickMoreDetail: PropTypes.func.isRequired,
 };
 
 export default WeatherCardList;

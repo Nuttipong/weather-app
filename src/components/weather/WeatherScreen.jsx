@@ -19,7 +19,7 @@ const mapStateToProps = (state) => {
     const groupOfDate = _.groupBy(data, (weather) => {
         return moment(weather.dt_txt).startOf('day').format();
     });
-    const tempModel = Object.values(groupOfDate).map((date) => {
+    const tempModel = Object.values(groupOfDate).map((date, index) => {
         let tempMin = [], tempMax = [];
         const avgTemp = (minAvg, maxAvg) => Math.round((minAvg + maxAvg) / 2).toFixed(0);
         const formatDate = (date) => moment(date).format('DD MMM YY');
@@ -30,12 +30,15 @@ const mapStateToProps = (state) => {
         tempMin = Math.min(...tempMin);
         tempMax = Math.max(...tempMax);
         return {
+            idx: index,
             tempAvgPerDay: avgTemp(tempMin, tempMax),
             date: formatDate(date[0].dt_txt),
             city: cityName,
-            unit: unit
+            unit: unit,
+            dateSegment: date
         };
     });
+
     return {
         city: state.weather.city,
         tempModel: tempModel || [],
@@ -56,7 +59,13 @@ export class WeatherScreen extends React.Component {
 
         this.state = {
             startIndex: 0,
-            pageSize: 3
+            pageSize: 3,
+            graphModel: {
+                categories: [],
+                data: [],
+                title: '',
+                yAxis: ''
+            }
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -69,6 +78,25 @@ export class WeatherScreen extends React.Component {
         this.prev = () => (ev) => {
             ev.preventDefault();
             this.prevClick();
+        };
+        this.clickMoreDetail = (idx) => (ev) => {            
+            const gData = this.props.tempModel.find((td) => td.idx === idx);
+            let data = [], segments = [], labels = [];
+            gData.dateSegment.forEach((d) => {
+                const formatDate = (date) => moment(date).format('hh:mm A');
+                segments.push(d.main.temp_max);
+                labels.push(formatDate(d.dt_txt));
+            });
+            data.push({
+                name: '',
+                data: [...segments]
+            });
+            this.setState({
+                graphModel: {
+                    categories: labels,
+                    data: data
+                }
+            });
         };
     }
 
@@ -138,9 +166,14 @@ export class WeatherScreen extends React.Component {
                         next={this.next}
                         startIndex={this.state.startIndex}
                         pageSize={this.state.pageSize}
+                        onClickMoreDetail={this.clickMoreDetail}
                     />
 
                     <BarChart
+                        title={`Forecast of ${this.props.city.name}<br/>xxxxx`}
+                        yAxis={this.props.tempType}
+                        categories={this.state.graphModel.categories}
+                        data={this.state.graphModel.data}
                     />
 
                 </Container>

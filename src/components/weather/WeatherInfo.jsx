@@ -33,6 +33,7 @@ export class WeatherInfo extends React.PureComponent {
                     model={this.props.tempModel}
                     pageSize={this.props.pageSize}
                     startIndex={this.props.startIndex}
+                    onClickMoreDetail={this.props.onClickMoreDetail}
                 />
             </div>
         );
@@ -47,6 +48,7 @@ WeatherInfo.propTypes = {
     next: PropTypes.func.isRequired,
     startIndex: PropTypes.number.isRequired,
     pageSize: PropTypes.number.isRequired,
+    onClickMoreDetail: PropTypes.func.isRequired
 };
 
 export default WeatherInfo;
