@@ -20,20 +20,26 @@ export default class TempSwitch extends React.PureComponent {
                     value={this.props.tempType} 
                     onChange={this.props.handleChange} 
                     row>
-                        <FormControlLabel
-                            style={{ marginRight: 100 }}
+                        <Grid container direction="row" alignItems="flex-start" justify="space-between">
+                            <Grid item>
+                            <FormControlLabel
                             value={TemperatureType.CELCIUS}
                             control={<Radio color="primary" />}
                             label={TemperatureType.CELCIUS}
                             labelPlacement="end"
                         />
-                        <FormControlLabel
-                            style={{ marginLeft: 100 }}
+                            </Grid>
+                            <Grid item>
+                            <FormControlLabel
                             value={TemperatureType.FAHRENHEIT}
                             control={<Radio color="primary" />}
                             label={TemperatureType.FAHRENHEIT}
                             labelPlacement="end"
                         />
+                            </Grid>
+                        </Grid>
+
+
                 </RadioGroup>
             </Grid>
         </Grid>
