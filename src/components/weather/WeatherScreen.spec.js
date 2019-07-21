@@ -146,7 +146,7 @@ describe('WeatherScreen', () => {
             pageSize: 3,
             graphModel: { 
                 categories: [ '03:00 AM' ],
-                data: [ { name: 'Temperature', data: [ 17.88 ] } ],
+                data: [ { name: 'Time periods', data: [ 17.88 ] } ],
                 date: '21 Jul 19' 
             },
             currentSelectedIndex: 1 
