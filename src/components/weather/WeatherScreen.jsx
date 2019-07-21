@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import moment from 'moment';
-import { TemperatureType, TemperatureUnit } from '../../constants/temperature';
+import { TemperatureType } from '../../constants/temperature';
 import Container from '@material-ui/core/Container';
 import { bindActionCreators } from 'redux';
 import * as weatherActions from '../../actions/weatherActions';
@@ -12,36 +11,9 @@ import TempSwitch from './TempSwitch';
 import WeatherInfo from './WeatherInfo';
 
 const mapStateToProps = (state) => {
-
-    const data = (state.weather.tempType === TemperatureType.FAHRENHEIT ? state.weather.fData : state.weather.cData);
-    const unit = state.weather.tempType === TemperatureType.FAHRENHEIT ? TemperatureUnit.FAHRENHEIT : TemperatureUnit.CELCIUS;
-    const cityName = state.weather.city.name || '';
-    const groupOfDate = _.groupBy(data, (weather) => {
-        return moment(weather.dt_txt).startOf('day').format();
-    });
-    const tempModel = Object.values(groupOfDate).map((date, index) => {
-        let tempMin = [], tempMax = [];
-        const avgTemp = (minAvg, maxAvg) => Math.round((minAvg + maxAvg) / 2).toFixed(0);
-        const formatDate = (date) => moment(date).format('DD MMM YY');
-        date.map((obj) => {
-            tempMin.push(obj.main.temp_min);
-            tempMax.push(obj.main.temp_max);
-        });
-        tempMin = Math.min(...tempMin);
-        tempMax = Math.max(...tempMax);
-        return {
-            idx: index,
-            tempAvgPerDay: avgTemp(tempMin, tempMax),
-            date: formatDate(date[0].dt_txt),
-            city: cityName,
-            unit: unit,
-            dateSegment: date
-        };
-    });
-
     return {
         city: state.weather.city,
-        tempModel: tempModel || [],
+        tempModel: state.weather.tempType === TemperatureType.FAHRENHEIT ? state.weather.fData : state.weather.cData,
         tempType: state.weather.tempType,
         currentSelectedIndex: state.weather.currentSelectedIndex
     };
@@ -101,11 +73,11 @@ export class WeatherScreen extends React.Component {
     }
 
     componentDidMount() {
-        let gData = [];
+        let gData = {};
         if (this.props.tempModel.length === 0) {
             this.props.actions.loadWeather()
             .then(() => {
-                gData = this.props.tempModel[0] || [];
+                gData = this.props.tempModel[0] || {};
                 this.renderGraph(gData);
             });
         } else {
@@ -119,15 +91,17 @@ export class WeatherScreen extends React.Component {
             const gData = this.props.tempModel.find((td) => td.idx === this.props.currentSelectedIndex);
             this.renderGraph(gData, this.props.currentSelectedIndex);
         }
-      }
+    }
 
     renderGraph(gData, idx = 0) {
         let data = [], segments = [], labels = [];
-        gData.dateSegment.forEach((d) => {
-            const formatDate = (date) => moment(date).format('hh:mm A');
-            segments.push(d.main.temp_max);
-            labels.push(formatDate(d.dt_txt));
-        });
+        if (gData.dateSegment) {
+            gData.dateSegment.forEach((d) => {
+                const formatDate = (date) => moment(date).format('hh:mm A');
+                segments.push(d.main.temp_max);
+                labels.push(formatDate(d.dt_txt));
+            });
+        }
         data.push({
             name: 'Temperature',
             data: [...segments]

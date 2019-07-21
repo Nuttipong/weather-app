@@ -5,6 +5,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -42,3 +43,12 @@ export default function WeatherCard(weather) {
     </Card>
   );
 }
+
+WeatherCard.propTypes = {
+  city: PropTypes.string.isRequired,
+  tempAvgPerDay: PropTypes.number.isRequired,
+  unit: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  onClickMoreDetail: PropTypes.func.isRequired,
+  idx: PropTypes.number.isRequired
+};

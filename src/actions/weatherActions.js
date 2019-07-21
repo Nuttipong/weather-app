@@ -9,7 +9,6 @@ export function loadWeather() {
             dispatch(loadWeatherSuccess(payload));
         }).catch((err) => {
             dispatch(stopLoading(err));
-            throw err;
         });
     };
 }

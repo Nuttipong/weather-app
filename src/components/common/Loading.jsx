@@ -39,7 +39,7 @@ export class Loading extends React.Component {
             1: '..',
             2: '...'
         };
-        return map[count];
+        return map[count] || '.';
     }
 
     renderWithLoading(count) {
