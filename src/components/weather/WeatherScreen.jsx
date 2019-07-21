@@ -103,7 +103,7 @@ export class WeatherScreen extends React.Component {
             });
         }
         data.push({
-            name: 'Temperature',
+            name: 'Time periods',
             data: [...segments]
         });
         this.setState({
