@@ -11,7 +11,7 @@ const hist = createBrowserHistory();
 
 render(
     <Provider store={store}>
-        <Router history={hist}>
+        <Router history={hist} basename="/weather-app">
             <Routes />
         </Router>
     </Provider>,

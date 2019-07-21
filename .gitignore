@@ -2,3 +2,5 @@ node_modules
 coverage/*
 *__snapshots__*
 *.lock
+dist/
+build/
