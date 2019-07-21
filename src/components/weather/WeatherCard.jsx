@@ -31,7 +31,7 @@ export default function WeatherCard(weather) {
           {city || ''}
         </Typography>
         <Typography variant="h5" component="h2">
-            Temp: {tempAvgPerDay + unit}
+            Temp: {`${tempAvgPerDay}${unit}`}
         </Typography>
         <Typography variant="h5" component="h2">
             Date: {date}

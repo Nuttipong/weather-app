@@ -17,7 +17,10 @@ export const WeatherCardList = ({model, pageSize, startIndex, onClickMoreDetail}
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
             {listToShow.map((weather, index) => {
                 return <WeatherCard key={index}
-                            {...weather}
+                            city={weather.city}
+                            tempAvgPerDay={Number(weather.tempAvgPerDay)}
+                            unit={weather.unit}
+                            date={weather.date}
                             onClickMoreDetail={onClickMoreDetail}
                             idx={weather.idx}
                         />;

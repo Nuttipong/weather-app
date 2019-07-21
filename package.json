@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "prestart": "babel-node tools/startMessage.js",
-    "start": "npm-run-all --parallel dev lint:watch",
+    "start": "npm-run-all --parallel test:watch dev lint:watch",
     "dev": "webpack-dev-server --mode development --open --config ./webpack.development.config.js",
     "lint": "node_modules/.bin/esw webpack.* src tools",
     "lint:watch": "npm run lint -- --watch",
+    "test": "jest -u",
+    "test:watch": "npm run test -- --watch",
+    "test:coverage": "jest -u --coverage",
     "clear": "rm -rf ./node_modules && rm -rf ./yarn.lock"
   },
   "author": "nuttipongt",

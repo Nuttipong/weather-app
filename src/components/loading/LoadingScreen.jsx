@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-class LoadingScreen extends React.Component {
+export class LoadingScreen extends React.Component {
 
     constructor(props, context) {
         super(props, context);
